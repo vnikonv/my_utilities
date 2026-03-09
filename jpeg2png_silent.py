@@ -1,9 +1,4 @@
 #! python
-"""
-# This is a utility for ffmpeg to convert all .jpeg/.jpg files in a specified directory
-# (and optionally its subdirectories) to .png format. It supports multithreading and
-# can delete original jpeg/jpg files after conversion.
-"""
 
 import time
 import sys
@@ -31,13 +26,10 @@ def jpeg2png(in_folder: str, out_folder: str, recursive: bool, leave: bool, dele
     num_files = len(jpeg_files)
 
     if not jpeg_files:
-        print('No .jpeg/.jpg files found.')
         return
 
     if not out_path.exists():
         out_path.mkdir(parents=True, exist_ok=False)
-
-    print(f'Found {num_files} image(s). Starting conversion...')
 
     success_count = 0
     fail_count = 0
@@ -53,23 +45,19 @@ def jpeg2png(in_folder: str, out_folder: str, recursive: bool, leave: bool, dele
             jpeg_f, success = future.result()
             count += 1
             status = 'Y' if success else 'N'
-            print(f'[{status}] Converted {count}/{num_files}: {jpeg_f.name}')
             if success:
                 success_count += 1
             else:
                 fail_count += 1
-
-    print(f'Conversion complete: {success_count} successful, {fail_count} failed.')
 
     if delete:
         for jpeg_f in jpeg_files:
             try:
                 jpeg_f.unlink()
             except Exception as e:
-                print(f'Failed to delete {jpeg_f}: {e}')
-        print('Deleted all jpeg/jpg files.')
+                return
     else:
-        print('Original files kept.')
+        return
 
 def main():
     parser = argparse.ArgumentParser(description="Convert all jpeg/jpg files from in_folder to png and store in out_folder.")
@@ -97,7 +85,7 @@ def main():
     parser.add_argument(
         '--deljpg', '-d',
         action='store_true',
-        help='Delete jpeg/jpg files after conversion.'
+        help='Delete jpeg/jpg files after conversion. DO NOT USE IF ffmpeg is NOT INSTALLED'
     )
     parser.add_argument(
         '--yes', '-y',
@@ -123,12 +111,6 @@ def main():
 
 try:
     if __name__ == '__main__':
-        start_time = time.time()
         main()
-        end_time = time.time()
-        elapsed = end_time - start_time
-        print(f'Total execution time: {elapsed:.2f} seconds.')
-except KeyboardInterrupt:
-    print('\nInterrupted by user.')
 finally:
     sys.exit(0)
