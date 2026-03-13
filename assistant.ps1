@@ -3,9 +3,13 @@
 $model = "E:\LLMS\models\gpt-oss-20b-F16.gguf"
 
 # Context length
-$context = 16384
+$context = 4096
+
+# Context shift enable
+$contextShift = "--context-shift"
 
 # Execute llama-server
 & "llama-server" `
     -m $model `      # model file
-    -c $context      # context length
+    -c $context `    # context length
+    $coontextShift   # shift context if model runs out of context
