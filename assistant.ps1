@@ -2,5 +2,6 @@ $llamaServer = "llama-server"
 $model = "E:\LLMS\models\gpt-oss-20b-F16.gguf"
 $context = 0
 $verbose = "--verbose-prompt"
+$ngl = 25
 
-& $llamaServer -m $model -c $context $verbose
+& $llamaServer -m $model -c $context $verbose -ngl $ngl
